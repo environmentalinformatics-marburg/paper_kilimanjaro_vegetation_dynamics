@@ -119,6 +119,6 @@ dev.off()
 ## standalone version
 setEPS()
 postscript(paste0(ch_dir_data, "vis/figure_06.eps"), width = 16.8 * .3937, 
-           height = 12 * .3937)
+           height = 12 * .3937, pointsize = 15)
 print(p_ssn)
 dev.off()
