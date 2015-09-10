@@ -3,7 +3,8 @@ library(Orcs)
 setwdOS(path_ext = "publications/paper/detsch_et_al__ndvi_dynamics/figures/data")
 
 ## packages
-lib <- c("raster", "rgdal", "plyr", "Rsenal", "OpenStreetMap", "ggplot2")
+lib <- c("raster", "rgdal", "plyr", "Rsenal", "OpenStreetMap", "ggplot2", 
+         "grid")
 sapply(lib, function(x) library(x, character.only = TRUE))
 
 ## functions
@@ -82,14 +83,15 @@ p_bing <- autoplot(kili.map) +
   scale_y_continuous(breaks = seq(-3.4, -3, .2), expand = c(.001, 0), 
                      labels = paste(seq(3.4, 3, -.2), "°S")) +
   labs(x = "Longitude", y = "Latitude") + 
-  theme(axis.title.x = element_text(size = rel(1.2)), 
-        axis.text.x = element_text(size = rel(1), colour = "black"), 
-        axis.title.y = element_text(size = rel(1.2)), 
-        axis.text.y = element_text(size = rel(1), colour = "black"), 
+  theme(axis.title.x = element_text(size = rel(1.4)), 
+        axis.text.x = element_text(size = rel(1.25), colour = "black"), 
+        axis.title.y = element_text(size = rel(1.4)), 
+        axis.text.y = element_text(size = rel(1.25), colour = "black"), 
         text = element_text(family = "Arial", colour = "black"))
 
 p_topo <- visKili()
 
+## manuscript version
 png("vis/fig01__map_w|o_grid.png", units = "cm", width = 20, 
     height = 16, res = 300, pointsize = 18)
 
@@ -105,3 +107,16 @@ print(p_topo, newpage = FALSE)
 
 dev.off()
 
+## standalone version
+tiff("vis/figure_01.tiff", res = 500, width = 20, height = 16, pointsize = 18, 
+     units = "cm")
+
+grid.newpage()
+print(p_bing, newpage = FALSE)
+
+vp_cont <- viewport(x = .7, y = .635, just = c("left", "bottom"), 
+                    width = .275, height = .325)
+pushViewport(vp_cont)
+print(p_topo, newpage = FALSE)
+
+dev.off()
