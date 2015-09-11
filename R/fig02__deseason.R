@@ -61,7 +61,7 @@ p_raw <- spplot(rst_eot_ll[[int_id_feb]], colorkey = FALSE,
                 sp.layout = list(
                   list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
                   list("sp.text", loc = c(37.05, -2.875), txt = "a)", 
-                       col = "black", font = 2, cex = .7)
+                       col = "black", font = 2, cex = 1)
                 ))
 
 p_mv <- spplot(rst_mv_ll[[1]], colorkey = FALSE,
@@ -73,7 +73,7 @@ p_mv <- spplot(rst_mv_ll[[1]], colorkey = FALSE,
                sp.layout = list(
                  list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
                  list("sp.text", loc = c(37.05, -2.875), txt = "b)", 
-                      col = "black", font = 2, cex = .7)
+                      col = "black", font = 2, cex = 1)
                ))
 
 p_raw_mv <- latticeCombineGrid(list(p_raw, p_mv), layout = c(2, 1))
@@ -88,7 +88,7 @@ p_anom <- spplot(rst_eot_ll[[int_id_feb]] - rst_mv_ll[[1]], colorkey = FALSE,
                  sp.layout = list(
                    list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
                    list("sp.text", loc = c(37.025, -2.875), txt = "c)", 
-                        col = "black", font = 2, cex = .7)
+                        col = "black", font = 2, cex = 1)
                  ))
 
 ## manuscript version
