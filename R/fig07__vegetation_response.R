@@ -175,10 +175,11 @@ for (i in 1:2) {
   ls_p[[i]] <- 
     ggplot(aes(x = period, y = value), 
            data = subset(df_mk_stats_mlt, param == prm[i])) + 
-      geom_boxplot(notch = TRUE, fill = "grey75", lwd = 1) + 
+      geom_boxplot(notch = TRUE, fill = "grey75", lwd = .75) + 
       labs(x = "", y = lbl[[i]]) + 
       theme_bw() + 
-      theme(text = element_text(size = 18), panel.grid = element_blank())
+      theme(panel.grid = element_blank(), axis.title = element_text(size = 8.5), 
+            axis.text = element_text(size = 7))
 
   if (i == 2)
     ls_p[[i]] <- ls_p[[i]] + 
@@ -186,20 +187,21 @@ for (i in 1:2) {
 }
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig07__vegetation_response.png"), width = 16, 
-    height = 20, units = "cm", pointsize = 18, res = 300)
+png(paste0(ch_dir_data, "vis/fig07__vegetation_response.png"), width = 10, 
+    height = 10, units = "cm", res = 500)
 grid.newpage()
 print(do.call(function(...) grid.arrange(..., ncol = 2), ls_p), newpage = FALSE)
-grid.text("a)", x = .185, y = .9, gp = gpar(font = 2, cex = 1.2))
-grid.text("b)", x = .71, y = .9, gp = gpar(font = 2, cex = 1.2))
+grid.text("a)", x = .185, y = .9, gp = gpar(font = 2, cex = .9))
+grid.text("b)", x = .71, y = .9, gp = gpar(font = 2, cex = .9))
 dev.off()
 
 ## standalone version
 setEPS()
-postscript(paste0(ch_dir_data, "vis/figure_07.eps"), width = 16*.3937, 
-           height = 20*.3937, pointsize = 18)
+postscript(paste0(ch_dir_data, "vis/figure_07.eps"), width = 10*.3937, 
+           height = 10*.3937)
+grid.newpage()
 grid.newpage()
 print(do.call(function(...) grid.arrange(..., ncol = 2), ls_p), newpage = FALSE)
-grid.text("a)", x = .185, y = .9, gp = gpar(font = 2, cex = 1.2))
-grid.text("b)", x = .71, y = .9, gp = gpar(font = 2, cex = 1.2))
+grid.text("a)", x = .185, y = .9, gp = gpar(font = 2, cex = .9))
+grid.text("b)", x = .71, y = .9, gp = gpar(font = 2, cex = .9))
 dev.off()
