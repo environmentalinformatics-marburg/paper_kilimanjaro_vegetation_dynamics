@@ -187,13 +187,16 @@ p_nino <- ggplot(aes(x, y, group = group, colour = group, linetype = group),
   scale_x_continuous("\nMonth", breaks = 1:(12+span), labels = lbl) + 
   labs(x = "\nMonth", y = expression(atop(NDVI[EOT], "\n"))) + 
   theme_bw() + 
-  theme(panel.grid = element_blank(), legend.key.width = unit(1.9, "line"), 
+  theme(panel.grid = element_blank(), legend.key.width = unit(1.8, "line"), 
         legend.key = element_rect(colour = NA), 
-        legend.direction = "horizontal", legend.position = c(.5, 1.2)) 
+        legend.text = element_text(size = 7),
+        legend.direction = "horizontal", legend.position = c(.45, 1.15), 
+        axis.title = element_text(size = 8.5), 
+        axis.text = element_text(size = 7), strip.text = element_text(size = 7)) 
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig09__ndvi_nino.png"), width = 28.8, height = 12, 
-    units = "cm", pointsize = 15, res = 300)
+png(paste0(ch_dir_data, "vis/fig09__ndvi_nino.png"), width = 20, height = 10, 
+    units = "cm", res = 500)
 grid.newpage()
 vp_nino <- viewport(x = 0, y = 0, width = 1, height = .9, 
                     just = c("left", "bottom"))
@@ -204,8 +207,8 @@ dev.off()
 
 ## standalone version
 setEPS()
-postscript(paste0(ch_dir_data, "vis/figure_09.eps"), width = 28.8*.4025, 
-           height = 12*.4025, pointsize = 15)
+postscript(paste0(ch_dir_data, "vis/figure_09.eps"), width = 20*.3937, 
+           height = 10*.3937)
 grid.newpage()
 vp_nino <- viewport(x = 0, y = 0, width = 1, height = .9, 
                     just = c("left", "bottom"))
@@ -329,13 +332,16 @@ p_nina <- ggplot(aes(x, y, group = group, colour = group, linetype = group),
   scale_x_continuous("\nMonth", breaks = 1:(12+span), labels = lbl) + 
   labs(x = "\nMonth", y = expression(atop(NDVI[EOT], "\n"))) + 
   theme_bw() + 
-  theme(panel.grid = element_blank(), legend.key.width = unit(1.9, "line"), 
+  theme(panel.grid = element_blank(), legend.key.width = unit(1.8, "line"), 
         legend.key = element_rect(colour = NA), 
-        legend.direction = "horizontal", legend.position = c(.49, 1.2)) 
+        legend.text = element_text(size = 7),
+        legend.direction = "horizontal", legend.position = c(.45, 1.15), 
+        axis.title = element_text(size = 8.5), 
+        axis.text = element_text(size = 7), strip.text = element_text(size = 7)) 
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig10__ndvi_nina.png"), width = 28.8, height = 12, 
-    units = "cm", pointsize = 15, res = 300)
+png(paste0(ch_dir_data, "vis/fig10__ndvi_nina.png"), width = 20, height = 10, 
+    units = "cm", res = 500)
 grid.newpage()
 vp_nina <- viewport(x = 0, y = 0, width = 1, height = .9, 
                     just = c("left", "bottom"))
@@ -345,8 +351,8 @@ dev.off()
 
 ## standalone version
 setEPS()
-postscript(paste0(ch_dir_data, "vis/figure_10.eps"), width = 28.8*.4025, 
-           height = 12*.4025, pointsize = 15)
+postscript(paste0(ch_dir_data, "vis/figure_10.eps"), width = 20*.3937, 
+           height = 10*.3937)
 grid.newpage()
 vp_nina <- viewport(x = 0, y = 0, width = 1, height = .9, 
                     just = c("left", "bottom"))
