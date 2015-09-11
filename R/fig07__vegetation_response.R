@@ -1,4 +1,6 @@
 ### environmental stuff
+
+## working directory
 library(Orcs)
 setwdOS()
 
