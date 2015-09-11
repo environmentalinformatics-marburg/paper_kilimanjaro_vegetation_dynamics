@@ -60,7 +60,7 @@ p_dem <- levelplot(z ~ x * y, colorkey = FALSE, at = seq(1000, 6000, 1000),
                    panel = function(...) {
                      panel.smoothconts(zlevs.conts = seq(1000, 5500, 500), 
                                        labels = c(1000, "", 2000, "", 3000, "", 4000, "", 5000, ""),
-                                       col = "grey50", ...)
+                                       col = "grey50", labcex = .7, ...)
                    })
 
 # national park boundaries
@@ -76,13 +76,12 @@ np_new_utm_sl <- as(np_new_utm, "SpatialLines")
 cols_div <- colorRampPalette(brewer.pal(11, "BrBG"))
 p_slp_gt_rmse <- 
   spplot(rst_slp_gt_rmse, col.regions = cols_div(100), 
-         xlab = "Longitude", ylab = "Latitude", at = seq(-.25, .25, .05), 
-         scales = list(draw = TRUE), colorkey = FALSE,
-         par.settings = list(fontsize = list(text = 15)),
+         xlab = NULL, ylab = NULL, at = seq(-.25, .25, .05), 
+         scales = list(draw = TRUE, cex = .7), colorkey = FALSE,
          sp.layout = list(list("sp.lines", np_old_utm_sl, lwd = 1.6, lty = 2), 
                           list("sp.lines", np_new_utm_sl, lwd = 1.6), 
                           list("sp.text", loc = c(37.05, -3.35), txt = "a)", 
-                               col = "black", font = 2, cex = 1.2)
+                               col = "black", font = 2, cex = .7)
          )) + 
   as.layer(p_dem)
 
@@ -104,13 +103,12 @@ mod_predicted_mk <- lapply(mod_predicted_mk, function(i) {
 cols_div <- brewer.pal(10, "BrBG")
 p_mk <- 
   spplot(mod_predicted_mk[[1]], col.regions = brewer.pal(10, "BrBG"), 
-         xlab = "Longitude", ylab = "", colorkey = FALSE,
-         at = seq(-.5, .5, .1), scales = list(draw = TRUE),  
-         par.settings = list(fontsize = list(text = 15)),
+         xlab = NULL, ylab = NULL, colorkey = FALSE,
+         at = seq(-.5, .5, .1), scales = list(draw = TRUE, cex = .7),  
          sp.layout = list(list("sp.lines", np_old_utm_sl, lwd = 1.6, lty = 2), 
                           list("sp.lines", np_new_utm_sl, lwd = 1.6), 
                           list("sp.text", loc = c(37.05, -3.35), txt = "b)", 
-                               col = "black", font = 2, cex = 1.2)
+                               col = "black", font = 2, cex = .7)
          )) + 
   as.layer(p_dem)
 
@@ -123,81 +121,67 @@ p_comb <- latticeCombineGrid(list(p_slp_gt_rmse_envin, p_mk_envin),
 p_comb <- latticeCombineGrid(list(p_slp_gt_rmse, p_mk), layout = c(2, 1))
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig03__longterm_trends.png"), height = 26*.7, 
-    width = 40*.7, units = "cm", res = 300, pointsize = 18)
+png(paste0(ch_dir_data, "vis/fig03__longterm_trends.png"), height = 9.5, 
+    width = 15, units = "cm", res = 500)
 plot.new()
-# # viewport for visualization of slope
-# vp0 <- viewport(x = 0, y = 0, height = 1, width = .5, 
-#                 just = c("left", "bottom"), name = "vp_slope")
-# pushViewport(vp0)
-# print(p_slp_gt_rmse_envin, newpage = FALSE)
-# 
-# # viewport for kendall's tau
-# upViewport()
-# vp1 <- viewport(x = 0.5, y = 0, height = 1, width = .5, 
-#                 just = c("left", "bottom"), name = "vp_tau")
-# pushViewport(vp1)
-# print(p_mk_envin, newpage = FALSE)
 
 print(p_comb, newpage = FALSE)
 
 # additional key
 downViewport(trellis.vpname(name = "figure"))
 
-vp1 <- viewport(x = 0.25, y = 1.15,
-                height = 0.07, width = .5,
+vp1 <- viewport(x = 0.25, y = 1.25,
+                height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_slope.vp")
 pushViewport(vp1)
 draw.colorkey(key = list(col = colorRampPalette(brewer.pal(11, "BrBG")), 
-                         width = 1, height = .75, at = seq(-.25, .25, .05), 
-                         space = "bottom"), draw = TRUE)
-grid.text("Regression slope", y = 2)
+                         width = 1, height = .5, at = seq(-.25, .25, .05), 
+                         space = "bottom", labels = list(cex = .7)), draw = TRUE)
+grid.text("Regression slope", y = 2.375, gp = gpar(cex = .75))
 
 upViewport()
-vp2 <- viewport(x = 0.75, y = 1.15,
-                height = 0.07, width = .5,
+vp2 <- viewport(x = 0.75, y = 1.25,
+                height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_tau.vp")
 pushViewport(vp2)
 draw.colorkey(key = list(col = brewer.pal(10, "BrBG"), 
-                         width = 1, height = .75, at = seq(-.5, .5, .1), 
-                         space = "bottom"), draw = TRUE)
-grid.text(expression("Kendall's" ~ tau), y = 2)
-# grid.text(expression("Kendall\'s" ~ tau), x = 0.5, y = 0.1, 
-#           just = c("centre", "top"), gp = gpar(fontface = 1, fontsize = 12, cex = 1.2))
+                         width = 1, height = .5, at = seq(-.5, .5, .1), 
+                         space = "bottom", labels = list(cex = .7)), draw = TRUE)
+grid.text(expression("Kendall's" ~ tau), y = 2.375, gp = gpar(cex = .75))
 
 dev.off()
 
 ## standalone version
-tiff(paste0(ch_dir_data, "vis/figure_03.tiff"), height = 26*.7, 
-    width = 40*.7, units = "cm", res = 500, pointsize = 18, 
-    compression = "lzw")
+tiff(paste0(ch_dir_data, "vis/figure_03.tiff"), height = 9.5, width = 15, 
+     units = "cm", res = 500, compression = "lzw")
 plot.new()
 
 print(p_comb, newpage = FALSE)
 
+# additional key
 downViewport(trellis.vpname(name = "figure"))
 
-vp1 <- viewport(x = 0.25, y = 1.15,
-                height = 0.07, width = .5,
+vp1 <- viewport(x = 0.25, y = 1.25,
+                height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_slope.vp")
 pushViewport(vp1)
 draw.colorkey(key = list(col = colorRampPalette(brewer.pal(11, "BrBG")), 
-                         width = 1, height = .75, at = seq(-.25, .25, .05), 
-                         space = "bottom"), draw = TRUE)
-grid.text("Regression slope", y = 2)
+                         width = 1, height = .5, at = seq(-.25, .25, .05), 
+                         space = "bottom", labels = list(cex = .7)), draw = TRUE)
+grid.text("Regression slope", y = 2.375, gp = gpar(cex = .75))
 
 upViewport()
-vp2 <- viewport(x = 0.75, y = 1.15,
-                height = 0.07, width = .5,
+vp2 <- viewport(x = 0.75, y = 1.25,
+                height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_tau.vp")
 pushViewport(vp2)
 draw.colorkey(key = list(col = brewer.pal(10, "BrBG"), 
-                         width = 1, height = .75, at = seq(-.5, .5, .1), 
-                         space = "bottom"), draw = TRUE)
-grid.text(expression("Kendall's" ~ tau), y = 2)
+                         width = 1, height = .5, at = seq(-.5, .5, .1), 
+                         space = "bottom", labels = list(cex = .7)), draw = TRUE)
+grid.text(expression("Kendall's" ~ tau), y = 2.375, gp = gpar(cex = .75))
 
 dev.off()
