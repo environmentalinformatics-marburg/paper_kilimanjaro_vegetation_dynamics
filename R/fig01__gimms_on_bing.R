@@ -70,10 +70,6 @@ p_bing <- autoplot(kili.map) +
                lwd = 1.1, fill = "transparent") + 
   geom_polygon(aes(long, lat), data = np_old_df, colour = "grey75", 
                lwd = 1, linetype = "dotted", fill = "transparent") + 
-  #   geom_polygon(aes(long, lat, group = group), template_ll_points, lwd = .5, 
-  #                fill = "transparent", colour = "black") + 
-  #   geom_polygon(aes(long, lat, group = group), template_1km_crp_ll_points, lwd = .3,
-  #                fill = "transparent", colour = "black") + 
   geom_hline(aes(yintercept = num_cntr_y), colour = "black", lty = "dashed", 
              lwd = .7) +
   geom_vline(aes(xintercept = num_cntr_x), colour = "black", lty = "dashed", 
@@ -82,40 +78,48 @@ p_bing <- autoplot(kili.map) +
                      labels = paste(seq(37, 37.6, .2), "°E")) + 
   scale_y_continuous(breaks = seq(-3.4, -3, .2), expand = c(.001, 0), 
                      labels = paste(seq(3.4, 3, -.2), "°S")) +
-  labs(x = "Longitude", y = "Latitude") + 
-  theme(axis.title.x = element_text(size = rel(1.4)), 
-        axis.text.x = element_text(size = rel(1.25), colour = "black"), 
-        axis.title.y = element_text(size = rel(1.4)), 
-        axis.text.y = element_text(size = rel(1.25), colour = "black"), 
-        text = element_text(family = "Arial", colour = "black"))
+  labs(x = NULL, y = NULL) + 
+#   theme(axis.title.x = element_text(size = rel(1.4)), 
+#         axis.text.x = element_text(size = rel(1.25), colour = "black"), 
+#         axis.title.y = element_text(size = rel(1.4)), 
+#         axis.text.y = element_text(size = rel(1.25), colour = "black"), 
+#         text = element_text(family = "Arial", colour = "black"))
+  theme(axis.text.x = element_text(size = 7, colour = "black"), 
+        axis.text.y = element_text(size = 7, colour = "black"), 
+        text = element_text(family = "Helvetica", colour = "black"), 
+        panel.margin = unit(c(0, 0, 0, 0), "cm"))
 
-p_topo <- visKili()
+p_topo <- visKili(cex = 1.5)
+
+## update theme settings
+theme_set(theme_bw(base_size = 20))
+theme_update(plot.margin = unit(rep(0, 4), units = "points"))
 
 ## manuscript version
-png("vis/fig01__map_w|o_grid.png", units = "cm", width = 20, 
-    height = 16, res = 300, pointsize = 18)
+png("vis/fig01__map_w|o_grid.png", units = "cm", width = 9, 
+    height = 7.2, res = 500)
 
 # satellite image
 grid.newpage()
 print(p_bing, newpage = FALSE)
 
 # topo map
-vp_cont <- viewport(x = .7, y = .635, just = c("left", "bottom"), 
-                    width = .275, height = .325)
+vp_cont <- viewport(x = .735, y = .635, just = c("left", "bottom"), 
+                    width = .3, height = .4)
 pushViewport(vp_cont)
 print(p_topo, newpage = FALSE)
 
 dev.off()
 
 ## standalone version
-tiff("vis/figure_01.tiff", res = 500, width = 20, height = 16, pointsize = 18, 
+tiff("vis/figure_01.tiff", res = 500, width = 9, height = 7.2, 
      units = "cm", compression = "lzw")
 
 grid.newpage()
 print(p_bing, newpage = FALSE)
 
-vp_cont <- viewport(x = .7, y = .635, just = c("left", "bottom"), 
-                    width = .275, height = .325)
+vp_cont <- viewport(x = .735, y = .635, just = c("left", "bottom"), 
+                    width = .3, height = .4)
 pushViewport(vp_cont)
 print(p_topo, newpage = FALSE)
 
