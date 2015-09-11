@@ -109,7 +109,7 @@ dev.off()
 
 ## standalone version
 tiff("vis/figure_01.tiff", res = 500, width = 20, height = 16, pointsize = 18, 
-     units = "cm")
+     units = "cm", compression = "lzw")
 
 grid.newpage()
 print(p_bing, newpage = FALSE)

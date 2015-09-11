@@ -179,7 +179,8 @@ dev.off()
 
 ## standalone version
 tiff(paste0(ch_dir_data, "vis/figure_05.tiff"), width = 26 * .85, 
-     height = 30 * .85, units = "cm", pointsize = 15, res = 500)
+     height = 30 * .85, units = "cm", pointsize = 15, res = 500, 
+     compression = "lzw")
 plot.new()
 
 vp0 <- viewport(x = 0, y = .05, width = 1, height = .95, 

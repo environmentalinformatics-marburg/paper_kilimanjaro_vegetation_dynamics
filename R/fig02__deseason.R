@@ -118,7 +118,8 @@ dev.off()
 
 ## standalone version
 tiff("publications/paper/detsch_et_al__ndvi_dynamics/figures/data/vis/figure_02.tiff", 
-    width = 18, height = 18, units = "cm", pointsize = 15, res = 500)
+    width = 18, height = 18, units = "cm", pointsize = 15, res = 500, 
+    compression = "lzw")
 grid.newpage()
 
 vp_raw <- viewport(x = 0, y = .58, just = c("left", "bottom"), 

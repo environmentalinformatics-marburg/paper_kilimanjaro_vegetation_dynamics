@@ -171,7 +171,8 @@ dev.off()
 
 ## standalone version
 tiff(paste0(ch_dir_data, "vis/figure_03.tiff"), height = 26*.7, 
-    width = 40*.7, units = "cm", res = 500, pointsize = 18)
+    width = 40*.7, units = "cm", res = 500, pointsize = 18, 
+    compression = "lzw")
 plot.new()
 
 print(p_comb, newpage = FALSE)
