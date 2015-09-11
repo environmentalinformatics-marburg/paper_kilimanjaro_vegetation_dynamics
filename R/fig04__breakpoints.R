@@ -25,9 +25,12 @@ ch_dir_data <- paste0(ch_dir_fig, "data/")
 
 ### data processing
 
+st <- as.Date("1982-01-01")
+nd <- as.Date("2011-12-01")
+
 # upper-left quadrant
 fls_prd_ul <- paste0(ch_dir_data, "gimms_ndvi3g_dwnscl_8211_0_0.tif")
-rst_prd_ul <- raster(fls_prd_ul)
+rst_prd_ul <- stack(fls_prd_ul)
 
 fls_prd_mk_ul <- paste0(ch_dir_data, "gimms_ndvi3g_dwnscl_8211_mk001_0_0.tif")
 rst_prd_mk_ul <- raster(fls_prd_mk_ul)
@@ -84,19 +87,34 @@ mat_oni_max_lbl <- sapply(1:2, function(i) {
 ch_oni_max_lbl <- paste(mat_oni_max_lbl[, 1], mat_oni_max_lbl[, 2], sep = "/")
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig04__breakpoints.png"), width = 24, height = 20, 
-    units = "cm", pointsize = 15, res = 300)
+old_theme <- lattice.options()
+old_theme$layout.widths$left.padding
+old_theme$layout.widths$left.padding$units <- "points"
+old_theme$layout.widths$right.padding$x <- 0
+old_theme$layout.widths$right.padding$units <- "points"
+old_theme$layout.heights$top.padding$x <- 0
+old_theme$layout.heights$top.padding$units <- "points"
+old_theme$layout.heights$bottom.padding$x <- 0
+old_theme$layout.heights$bottom.padding$units <- "points"
+
+png(paste0(ch_dir_data, "vis/fig04__breakpoints.png"), width = 14, height = 12, 
+    units = "cm", res = 500)
 xyplot(value ~ time | component, data = mlt_bfast_prd_ul, layout = c(1, 4),
-         xlab = "Time (months)", ylab = "", 
+         xlab = "Time (months)", ylab = NULL, 
          as.table = TRUE, scales = list(y = list(relation = "free")), 
          panel = function(x, y) {
            panel.xyplot(x, y, col = "black", type = "l", lwd = 2)
-         }, par.settings = list(strip.background = list(col = "lightgrey")))
+         }, par.settings = list(strip.background = list(col = "lightgrey"), 
+                                axis.text = list(cex = 0.65),
+                                par.xlab.text = list(cex = 0.8),
+                                par.ylab.text = list(cex = 0.8)), 
+       lattice.options = old_theme, 
+       strip = strip.custom(par.strip.text = list(cex = .7)))
 
 trellis.focus(name = "panel", column = 1, row = 3)
 panel.abline(v = bp_months, lty = 3, col = "red", lwd = 2.5)
 panel.text(x = bp_months, y = c(.5, .5, .625), labels = paste0("\n", as.yearmon(bp_months)), 
-           srt = 90, col = "red")
+           srt = 90, col = "red", cex = .5)
 trellis.unfocus()
 
 for (i in c(2, 4)) {
@@ -110,14 +128,14 @@ jnk <- foreach (i = 1:4, label = c("a)", "b)", "c)", "d)")) %do%  {
   y_min <- current.panel.limits()$ylim[1]
   y_max <- current.panel.limits()$ylim[2]
   y_pos <- y_max - 0.1 * (y_max - y_min)
-  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = 1.2)
+  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = .8)
   trellis.unfocus()
 }
 
 # major enso events
 trellis.focus(name = "panel", column = 1, row = 1)
 panel.abline(v = df_oni_max$Date, lty = 2, col = "darkgreen", lwd = 2.5)
-panel.text(x = df_oni_max$Date, y = rep(.415, length(df_oni_max$Date)), 
+panel.text(x = df_oni_max$Date, y = rep(.415, length(df_oni_max$Date)), cex = .5,
            labels = paste0("\n", ch_oni_max_lbl), srt = 90, col = "darkgreen")
 trellis.unfocus()
 
@@ -125,19 +143,25 @@ dev.off()
 
 ## standalone version
 setEPS()
-postscript(paste0(ch_dir_data, "vis/figure_04.eps"), width = 9.5, height = 7.9)
+postscript(paste0(ch_dir_data, "vis/figure_04.eps"), width = 14*.3937, 
+           height = 12*.3937)
 
 xyplot(value ~ time | component, data = mlt_bfast_prd_ul, layout = c(1, 4),
-       xlab = "Time (months)", ylab = "", 
+       xlab = "Time (months)", ylab = NULL, 
        as.table = TRUE, scales = list(y = list(relation = "free")), 
        panel = function(x, y) {
          panel.xyplot(x, y, col = "black", type = "l", lwd = 2)
-       }, par.settings = list(strip.background = list(col = "lightgrey")))
+       }, par.settings = list(strip.background = list(col = "lightgrey"), 
+                              axis.text = list(cex = 0.65),
+                              par.xlab.text = list(cex = 0.8),
+                              par.ylab.text = list(cex = 0.8)), 
+       lattice.options = old_theme, 
+       strip = strip.custom(par.strip.text = list(cex = .7)))
 
 trellis.focus(name = "panel", column = 1, row = 3)
 panel.abline(v = bp_months, lty = 3, col = "red", lwd = 2.5)
 panel.text(x = bp_months, y = c(.5, .5, .625), labels = paste0("\n", as.yearmon(bp_months)), 
-           srt = 90, col = "red")
+           srt = 90, col = "red", cex = .5)
 trellis.unfocus()
 
 for (i in c(2, 4)) {
@@ -151,14 +175,14 @@ jnk <- foreach (i = 1:4, label = c("a)", "b)", "c)", "d)")) %do%  {
   y_min <- current.panel.limits()$ylim[1]
   y_max <- current.panel.limits()$ylim[2]
   y_pos <- y_max - 0.1 * (y_max - y_min)
-  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = 1.2)
+  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = .8)
   trellis.unfocus()
 }
 
 # major enso events
 trellis.focus(name = "panel", column = 1, row = 1)
 panel.abline(v = df_oni_max$Date, lty = 2, col = "darkgreen", lwd = 2.5)
-panel.text(x = df_oni_max$Date, y = rep(.415, length(df_oni_max$Date)), 
+panel.text(x = df_oni_max$Date, y = rep(.415, length(df_oni_max$Date)), cex = .5,
            labels = paste0("\n", ch_oni_max_lbl), srt = 90, col = "darkgreen")
 trellis.unfocus()
 
