@@ -108,17 +108,20 @@ p_ssn <- ggplot(aes(x = month, y = x, group = station, colour = station,
   scale_fill_manual("", values = cols) + 
   labs(x = "\nMonth", y = "Precipitation (mm)\n") + 
   theme_bw() + 
-  theme(legend.position = c(1, 1), legend.justification = c(1, 1))
+  theme(legend.position = c(1, 1), legend.justification = c(1, 1), 
+        legend.text = element_text(size = 6), legend.key.size = unit(4, "mm"),
+        axis.title = element_text(size = 8.5), 
+        axis.text = element_text(size = 7))
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig06__rainfall_seasonality.png"), width = 16.8, 
-    height = 12, units = "cm", pointsize = 15, res = 300)
+png(paste0(ch_dir_data, "vis/fig06__rainfall_seasonality.png"), width = 10, 
+    height = 9, units = "cm", res = 500)
 print(p_ssn)
 dev.off()
 
 ## standalone version
 setEPS()
-postscript(paste0(ch_dir_data, "vis/figure_06.eps"), width = 16.8 * .3937, 
-           height = 12 * .3937, pointsize = 15)
+postscript(paste0(ch_dir_data, "vis/figure_06.eps"), width = 10 * .3937, 
+           height = 9 * .3937)
 print(p_ssn)
 dev.off()
