@@ -52,97 +52,160 @@ col.regions <- colorRampPalette(brewer.pal(9, "Greens"))
 rst_dem_ll <- crop(rst_dem_ll, rst_mv_ll)
 
 rst_eot_ll[[int_id_feb]][rst_eot_ll[[int_id_feb]][] > 1] <- 1
-p_raw <- spplot(rst_eot_ll[[int_id_feb]], scales = list(draw = TRUE), 
+p_raw <- spplot(rst_eot_ll[[int_id_feb]], colorkey = FALSE, 
+                scales = list(draw = TRUE, cex = .7, 
+                              x = list(at = seq(37.1, 37.6, .5)), 
+                              y = list(at = seq(-3, -3.4, -.2))), 
                 col.regions = col.regions(100), at = seq(-.1, 1, .05), 
-                xlab = "", ylab = "Latitude", 
+                xlab = NULL, ylab = NULL, 
                 sp.layout = list(
                   list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
                   list("sp.text", loc = c(37.05, -2.875), txt = "a)", 
-                       col = "black", font = 2, cex = 1.2)
+                       col = "black", font = 2, cex = .7)
                 ))
 
-p_mv <- spplot(rst_mv_ll[[1]], scales = list(draw = TRUE), 
+p_mv <- spplot(rst_mv_ll[[1]], colorkey = FALSE,
+               scales = list(draw = TRUE, cex = .7, 
+                             x = list(at = seq(37.1, 37.6, .5)), 
+                             y = list(at = seq(-3, -3.4, -.2))), 
                col.regions = col.regions(100), at = seq(-.1, 1, .05),
-               xlab = "", ylab = "Latitude", 
+               xlab = NULL, ylab = NULL, 
                sp.layout = list(
                  list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
                  list("sp.text", loc = c(37.05, -2.875), txt = "b)", 
-                      col = "black", font = 2, cex = 1.2)
+                      col = "black", font = 2, cex = .7)
                ))
 
 p_raw_mv <- latticeCombineGrid(list(p_raw, p_mv), layout = c(2, 1))
 
 col.div <- colorRampPalette(brewer.pal(11, "BrBG"))
-p_anom <- spplot(rst_eot_ll[[int_id_feb]] - rst_mv_ll[[1]], 
-                 scales = list(draw = TRUE), col.regions = col.div(100), 
-                 xlab = "Longitude", ylab = "Latitude", at = seq(-.4, .4, .05), 
+p_anom <- spplot(rst_eot_ll[[int_id_feb]] - rst_mv_ll[[1]], colorkey = FALSE,
+                 scales = list(draw = TRUE, cex = .7, tck = c(1, 0),
+                               x = list(at = seq(37, 37.6, .2)), 
+                               y = list(at = seq(-3, -3.4, -.2))), 
+                 col.regions = col.div(100), 
+                 xlab = NULL, ylab = NULL, at = seq(-.4, .4, .05), 
                  sp.layout = list(
                    list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
                    list("sp.text", loc = c(37.025, -2.875), txt = "c)", 
-                        col = "black", font = 2, cex = 1.2)
+                        col = "black", font = 2, cex = .7)
                  ))
 
 ## manuscript version
+old_theme <- lattice.options()
+lattice.options(
+  layout.widths = list(
+    left.padding = list(x = 0, units = "points"), 
+    right.padding = list(x = 0, units = "points")
+  ), 
+  layout.heights = list(
+    top.padding = list(x = 0, units = "points"), 
+    bottom.padding = list(x = 0, units = "points")
+  )
+)
+
 png("publications/paper/detsch_et_al__ndvi_dynamics/figures/data/vis/fig02__deseason.png", 
-    width = 18, height = 18, units = "cm", pointsize = 15, res = 300)
+    width = 9, height = 10, units = "cm", pointsize = 12, res = 500)
 grid.newpage()
 
-# raw and mean february values
-vp_raw <- viewport(x = 0, y = .58, just = c("left", "bottom"), 
-                   width = 1, height = .4)
+vp_raw <- viewport(x = -.08, y = .55, just = c("left", "bottom"), 
+                   width = 1, height = .475)
 pushViewport(vp_raw)
 print(p_raw_mv, newpage = FALSE)
 
-# deseasoned february values
 upViewport()
-vp_dsn <- viewport(x = 0, y = .01, just = c("left", "bottom"), 
-                   width = 1, height = .645)
+vp_dsn <- viewport(x = -.08, y = 0, just = c("left", "bottom"), 
+                   width = .98, height = .675)
 pushViewport(vp_dsn)
 print(p_anom, newpage = FALSE)
 
-# legend caption (1)
 upViewport()
-vp_legcap1 <- viewport(x = .9, y = .54, just = c("left", "bottom"), 
-                       width = .1, height = .5)
+vp_legcap1 <- viewport(x = .93, y = .575, just = c("left", "bottom"), 
+                       width = .1, height = .42)
 pushViewport(vp_legcap1)
-grid.text(expression("NDVI"[EOT]), rot = -90)
+grid.text(expression("NDVI"[EOT]), rot = -90, gp = gpar(cex = .7))
 
-# legend caption (2)
+# lower colorkey
 upViewport()
-vp_legcap2 <- viewport(x = .9, y = .04, just = c("left", "bottom"), 
+vpkeylo <- viewport(x = .885, y = .35,
+                    height = 0.3, width = .05,
+                    just = c("center", "center"),
+                    name = "keylo.vp")
+pushViewport(vpkeylo)
+draw.colorkey(key = list(col = col.div(100), width = 1,
+                         at = seq(-.4, .4, .05), labels = list(cex = .7),
+                         space = "right"), draw = TRUE)
+
+# upper colorkey
+upViewport()
+vpkeyup <- viewport(x = .885, y = .785,
+                    height = 0.15, width = .05,
+                    just = c("center", "center"),
+                    name = "keyup.vp")
+pushViewport(vpkeyup)
+draw.colorkey(key = list(col = col.regions(100), width = 1,
+                         at = seq(-.1, 1, .05), labels = list(cex = .7),
+                         space = "right"), draw = TRUE)
+
+upViewport()
+vp_legcap2 <- viewport(x = .93, y = .04, just = c("left", "bottom"), 
                        width = .1, height = .64)
 pushViewport(vp_legcap2)
-grid.text(expression(Delta ~ "NDVI"), rot = -90)
+grid.text(expression(Delta ~ "NDVI"), rot = -90, gp = gpar(cex = .7))
 
 dev.off()
 
 ## standalone version
 tiff("publications/paper/detsch_et_al__ndvi_dynamics/figures/data/vis/figure_02.tiff", 
-    width = 18, height = 18, units = "cm", pointsize = 15, res = 500, 
-    compression = "lzw")
+    width = 9, height = 10, units = "cm", res = 500, compression = "lzw")
 grid.newpage()
 
-vp_raw <- viewport(x = 0, y = .58, just = c("left", "bottom"), 
-                   width = 1, height = .4)
+vp_raw <- viewport(x = -.08, y = .55, just = c("left", "bottom"), 
+                   width = 1, height = .475)
 pushViewport(vp_raw)
 print(p_raw_mv, newpage = FALSE)
 
 upViewport()
-vp_dsn <- viewport(x = 0, y = .01, just = c("left", "bottom"), 
-                   width = 1, height = .645)
+vp_dsn <- viewport(x = -.08, y = 0, just = c("left", "bottom"), 
+                   width = .98, height = .675)
 pushViewport(vp_dsn)
 print(p_anom, newpage = FALSE)
 
 upViewport()
-vp_legcap1 <- viewport(x = .9, y = .54, just = c("left", "bottom"), 
-                       width = .1, height = .5)
+vp_legcap1 <- viewport(x = .93, y = .575, just = c("left", "bottom"), 
+                       width = .1, height = .42)
 pushViewport(vp_legcap1)
-grid.text(expression("NDVI"[EOT]), rot = -90)
+grid.text(expression("NDVI"[EOT]), rot = -90, gp = gpar(cex = .7))
+
+# lower colorkey
+upViewport()
+vpkeylo <- viewport(x = .885, y = .35,
+                    height = 0.3, width = .05,
+                    just = c("center", "center"),
+                    name = "keylo.vp")
+pushViewport(vpkeylo)
+draw.colorkey(key = list(col = col.div(100), width = 1,
+                         at = seq(-.4, .4, .05), labels = list(cex = .7),
+                         space = "right"), draw = TRUE)
+
+# upper colorkey
+upViewport()
+vpkeyup <- viewport(x = .885, y = .785,
+                    height = 0.15, width = .05,
+                    just = c("center", "center"),
+                    name = "keyup.vp")
+pushViewport(vpkeyup)
+draw.colorkey(key = list(col = col.regions(100), width = 1,
+                         at = seq(-.1, 1, .05), labels = list(cex = .7),
+                         space = "right"), draw = TRUE)
 
 upViewport()
-vp_legcap2 <- viewport(x = .9, y = .04, just = c("left", "bottom"), 
+vp_legcap2 <- viewport(x = .93, y = .04, just = c("left", "bottom"), 
                        width = .1, height = .64)
 pushViewport(vp_legcap2)
-grid.text(expression(Delta ~ "NDVI"), rot = -90)
+grid.text(expression(Delta ~ "NDVI"), rot = -90, gp = gpar(cex = .7))
 
 dev.off()
+
+## reset lattice options
+lattice.options(old_theme)
