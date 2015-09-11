@@ -63,11 +63,11 @@ col_month_max <- data.frame(cell = 1:length(val_month_max),
                             l = 80,
                             c = 65)
 
-p_month_max_st <- spplot(rst_st[[1]], scales = list(draw = TRUE), at = .5:12.5, 
+p_month_max_st <- spplot(rst_st[[1]], scales = list(draw = TRUE, cex = .7), at = .5:12.5, 
                          # xlab = list("Longitude", cex = 1.2), 
                          # ylab = list("Latitude", cex = 1.2), 
                          col.regions = hcl(h = col_month_max$h, c = 70, l = 65), 
-                         main = "Month", 
+                         main = list("Month", cex = 1),
                          sp.layout = list("sp.text", loc = c(37.025, -3.35), 
                                           txt = "a)", font = 2, cex = 1.2))
 
@@ -86,7 +86,7 @@ col_month_max <- data.frame(cell = 1:length(val_month_max),
                             l = 80,
                             c = 65)
 
-p_month_max_nd <- spplot(rst_nd[[1]], scales = list(draw = TRUE), at = .5:12.5, 
+p_month_max_nd <- spplot(rst_nd[[1]], scales = list(draw = TRUE, cex = .7), at = .5:12.5, 
                          # xlab = list("Longitude", cex = 1.2), 
                          # ylab = list("Latitude", cex = 1.2), 
                          col.regions = hcl(h = col_month_max$h, c = 70, l = 65), 
@@ -108,11 +108,11 @@ rat$month <- c("-", "0", "+")
 levels(rat_diff_month_rcl) <- rat
 
 p_diff_max_x <- levelplot(rat_diff_month_rcl, col.regions = rev(brewer.pal(9, "RdBu")), 
-                          at = -1.5:1.5, scales = list(draw = TRUE), 
+                          at = -1.5:1.5, scales = list(draw = TRUE, cex = .7), 
                           xlab = "Longitude", ylab = "Latitude")
 
 p_diff_max_x <- spplot(rst_diff_month_rcl, col.regions = rev(brewer.pal(9, "RdBu")), 
-                       at = -1.5:1.5, scales = list(draw = TRUE), 
+                       at = -1.5:1.5, scales = list(draw = TRUE, cex = .7), 
                        # xlab = "Longitude", ylab = "Latitude", 
                        sp.layout = list("sp.text", loc = c(37.025, -3.35), 
                                         txt = "c)", font = 2, cex = 1.2))
@@ -138,8 +138,8 @@ p_comb <- latticeCombineGrid(list(p_month_max_st_dem_envin,
                              layout = c(2, 2))
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig05__seasonality.png"), width = 26 * .85, 
-    height = 30 * .85, units = "cm", pointsize = 15, res = 300)
+png(paste0(ch_dir_data, "vis/fig05__seasonality.png"), width = 20, 
+    height = 23, units = "cm", res = 500)
 plot.new()
 
 vp0 <- viewport(x = 0, y = .05, width = 1, height = .95, 
@@ -148,8 +148,8 @@ pushViewport(vp0)
 print(p_comb, newpage = FALSE)
 
 ## colorkey: seasonal shift
-vp1 <- viewport(x = .3, y = .065,
-                height = 0.07, width = .4,
+vp1 <- viewport(x = .275, y = .065,
+                height = 0.07, width = .3,
                 just = c("center", "bottom"),
                 name = "key1.vp")
 pushViewport(vp1)
@@ -158,29 +158,26 @@ draw.colorkey(key = list(col = rev(brewer.pal(9, "RdBu")), width = 1, height = .
 labels = list(labels = c("-", "0", "+"), at = c(-1, 0, 1)), 
                          space = "bottom"), draw = TRUE)
 grid.text("Seasonal shift", x = 0.5, y = -.1, just = c("centre", "top"), 
-          gp = gpar(font = 2))
+          gp = gpar(font = 2, cex = .85))
 
 ## colorkey: Delta NDVI_EOTmax
 upViewport()
-vp2 <- viewport(x = .7, y = .065,
-                height = 0.07, width = .4,
+vp2 <- viewport(x = .725, y = .065,
+                height = 0.07, width = .3,
                 just = c("center", "bottom"),
                 name = "key2.vp")
 pushViewport(vp2)
 draw.colorkey(key = list(col = cols_div(17), width = 1,
                          at = seq(-.175, .175, .025),
                          space = "bottom"), draw = TRUE)
-grid.text(expression(Delta ~ "NDVI"[EOTmax]), x = 0.5, y = -.1, 
-          just = c("centre", "top"), gp = gpar(font = 2))
 grid.text(expression(bold(Delta ~ "NDVI"[EOTmax])), x = 0.5, y = -.1, 
-          just = c("centre", "top"), gp = gpar(font = 2))
+          just = c("centre", "top"), gp = gpar(font = 2, cex = .85))
 
 dev.off()
 
 ## standalone version
-tiff(paste0(ch_dir_data, "vis/figure_05.tiff"), width = 26 * .85, 
-     height = 30 * .85, units = "cm", pointsize = 15, res = 500, 
-     compression = "lzw")
+tiff(paste0(ch_dir_data, "vis/figure_05.tiff"), width = 20, 
+     height = 23, units = "cm", res = 500, compression = "lzw")
 plot.new()
 
 vp0 <- viewport(x = 0, y = .05, width = 1, height = .95, 
@@ -188,8 +185,9 @@ vp0 <- viewport(x = 0, y = .05, width = 1, height = .95,
 pushViewport(vp0)
 print(p_comb, newpage = FALSE)
 
-vp1 <- viewport(x = .3, y = .065,
-                height = 0.07, width = .4,
+## colorkey: seasonal shift
+vp1 <- viewport(x = .275, y = .065,
+                height = 0.07, width = .3,
                 just = c("center", "bottom"),
                 name = "key1.vp")
 pushViewport(vp1)
@@ -198,20 +196,19 @@ draw.colorkey(key = list(col = rev(brewer.pal(9, "RdBu")), width = 1, height = .
                          labels = list(labels = c("-", "0", "+"), at = c(-1, 0, 1)), 
                          space = "bottom"), draw = TRUE)
 grid.text("Seasonal shift", x = 0.5, y = -.1, just = c("centre", "top"), 
-          gp = gpar(font = 2))
+          gp = gpar(font = 2, cex = .85))
 
+## colorkey: Delta NDVI_EOTmax
 upViewport()
-vp2 <- viewport(x = .7, y = .065,
-                height = 0.07, width = .4,
+vp2 <- viewport(x = .725, y = .065,
+                height = 0.07, width = .3,
                 just = c("center", "bottom"),
                 name = "key2.vp")
 pushViewport(vp2)
 draw.colorkey(key = list(col = cols_div(17), width = 1,
                          at = seq(-.175, .175, .025),
                          space = "bottom"), draw = TRUE)
-grid.text(expression(Delta ~ "NDVI"[EOTmax]), x = 0.5, y = -.1, 
-          just = c("centre", "top"), gp = gpar(font = 2))
 grid.text(expression(bold(Delta ~ "NDVI"[EOTmax])), x = 0.5, y = -.1, 
-          just = c("centre", "top"), gp = gpar(font = 2))
+          just = c("centre", "top"), gp = gpar(font = 2, cex = .85))
 
 dev.off()
