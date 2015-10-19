@@ -8,7 +8,7 @@ lib <- c("raster", "rgdal", "plyr", "Rsenal", "OpenStreetMap", "ggplot2",
 sapply(lib, function(x) library(x, character.only = TRUE))
 
 ## functions
-source("../../../../../repositories/paper_kilimanjaro_scintillometer/R/visKili.R")
+source("../../../../../repositories/paper_kilimanjaro_ndvi_comparison/R/visKili.R")
 
 ## gimms 8-km
 fls_gimms <- "geo198107-VI3g_crp_utm_wht_aggmax.tif"
@@ -84,43 +84,55 @@ p_bing <- autoplot(kili.map) +
 #         axis.title.y = element_text(size = rel(1.4)), 
 #         axis.text.y = element_text(size = rel(1.25), colour = "black"), 
 #         text = element_text(family = "Arial", colour = "black"))
-  theme(axis.text.x = element_text(size = 7, colour = "black"), 
-        axis.text.y = element_text(size = 7, colour = "black"), 
+  theme(axis.text.x = element_text(size = 8, colour = "black"), 
+        axis.text.y = element_text(size = 8, colour = "black"), 
         text = element_text(family = "Helvetica", colour = "black"), 
         panel.margin = unit(c(0, 0, 0, 0), "cm"))
 
-p_topo <- visKili(cex = 1.5)
+p_topo <- visKili(cex = 1, ext = template_ll)
 
 ## update theme settings
 theme_set(theme_bw(base_size = 20))
 theme_update(plot.margin = unit(rep(0, 4), units = "points"))
 
 ## manuscript version
-png("vis/fig01__map_w|o_grid.png", units = "cm", width = 9, 
-    height = 7.2, res = 500)
+png("vis/fig01__map_w|o_grid.png", units = "cm", width = 14.1, 
+    height = 10.3, res = 500)
 
 # satellite image
 grid.newpage()
 print(p_bing, newpage = FALSE)
 
 # topo map
-vp_cont <- viewport(x = .735, y = .635, just = c("left", "bottom"), 
+vp_cont <- viewport(x = .7, y = .635, just = c("left", "bottom"), 
                     width = .3, height = .4)
 pushViewport(vp_cont)
 print(p_topo, newpage = FALSE)
+
+# add equator label
+downViewport(trellis.vpname("figure"))
+grid.text(x = .05, y = .38, just = c("left", "bottom"), label = "Eq.", 
+          gp = gpar(cex = .6))
 
 dev.off()
 
 ## standalone version
-tiff("vis/figure_01.tiff", res = 500, width = 9, height = 7.2, 
+tiff("vis/figure_01.tiff", res = 500, width = 14.1, height = 10.3, 
      units = "cm", compression = "lzw")
 
+# satellite image
 grid.newpage()
 print(p_bing, newpage = FALSE)
 
-vp_cont <- viewport(x = .735, y = .635, just = c("left", "bottom"), 
+# topo map
+vp_cont <- viewport(x = .7, y = .635, just = c("left", "bottom"), 
                     width = .3, height = .4)
 pushViewport(vp_cont)
 print(p_topo, newpage = FALSE)
+
+# add equator label
+downViewport(trellis.vpname("figure"))
+grid.text(x = .05, y = .38, just = c("left", "bottom"), label = "Eq.", 
+          gp = gpar(cex = .6))
 
 dev.off()

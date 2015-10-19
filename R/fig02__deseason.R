@@ -52,16 +52,19 @@ col.regions <- colorRampPalette(brewer.pal(9, "Greens"))
 rst_dem_ll <- crop(rst_dem_ll, rst_mv_ll)
 
 rst_eot_ll[[int_id_feb]][rst_eot_ll[[int_id_feb]][] > 1] <- 1
-p_raw <- spplot(rst_eot_ll[[int_id_feb]], colorkey = FALSE, 
+p_raw <- spplot(rst_eot_ll[[int_id_feb]], 
                 scales = list(draw = TRUE, cex = .7, 
                               x = list(at = seq(37.1, 37.6, .5)), 
                               y = list(at = seq(-3, -3.4, -.2))), 
                 col.regions = col.regions(100), at = seq(-.1, 1, .05), 
+                colorkey = list(space = "top", width = .7, height = .75), 
                 xlab = NULL, ylab = NULL, 
+                main = list(expression("      NDVI"["EOT"]), cex = .85),
                 sp.layout = list(
-                  list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
+                  list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75", 
+                       lwd = .5), 
                   list("sp.text", loc = c(37.05, -2.875), txt = "a)", 
-                       col = "black", font = 2, cex = 1)
+                       col = "black", font = 2, cex = .8)
                 ))
 
 p_mv <- spplot(rst_mv_ll[[1]], colorkey = FALSE,
@@ -71,24 +74,27 @@ p_mv <- spplot(rst_mv_ll[[1]], colorkey = FALSE,
                col.regions = col.regions(100), at = seq(-.1, 1, .05),
                xlab = NULL, ylab = NULL, 
                sp.layout = list(
-                 list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
+                 list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75", 
+                      lwd = .5), 
                  list("sp.text", loc = c(37.05, -2.875), txt = "b)", 
-                      col = "black", font = 2, cex = 1)
+                      col = "black", font = 2, cex = .8)
                ))
 
 p_raw_mv <- latticeCombineGrid(list(p_raw, p_mv), layout = c(2, 1))
 
 col.div <- colorRampPalette(brewer.pal(11, "BrBG"))
-p_anom <- spplot(rst_eot_ll[[int_id_feb]] - rst_mv_ll[[1]], colorkey = FALSE,
+p_anom <- spplot(rst_eot_ll[[int_id_feb]] - rst_mv_ll[[1]], 
+                 colorkey = list(space = "bottom", width = .7, height = .75),  
                  scales = list(draw = TRUE, cex = .7, tck = c(1, 0),
                                x = list(at = seq(37, 37.6, .2)), 
                                y = list(at = seq(-3, -3.4, -.2))), 
                  col.regions = col.div(100), 
                  xlab = NULL, ylab = NULL, at = seq(-.4, .4, .05), 
                  sp.layout = list(
-                   list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75"), 
+                   list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75", 
+                        lwd = .5), 
                    list("sp.text", loc = c(37.025, -2.875), txt = "c)", 
-                        col = "black", font = 2, cex = 1)
+                        col = "black", font = 2, cex = .8)
                  ))
 
 ## manuscript version
@@ -105,105 +111,55 @@ lattice.options(
 )
 
 png("publications/paper/detsch_et_al__ndvi_dynamics/figures/data/vis/fig02__deseason.png", 
-    width = 9, height = 10, units = "cm", pointsize = 12, res = 500)
+    width = 10, height = 16, units = "cm", pointsize = 12, res = 500)
 grid.newpage()
 
-vp_raw <- viewport(x = -.08, y = .55, just = c("left", "bottom"), 
+# raw data
+vp_raw <- viewport(x = 0, y = .51, just = c("left", "bottom"), 
                    width = 1, height = .475)
 pushViewport(vp_raw)
 print(p_raw_mv, newpage = FALSE)
 
+# anomalies
 upViewport()
-vp_dsn <- viewport(x = -.08, y = 0, just = c("left", "bottom"), 
+vp_dsn <- viewport(x = 0, y = 0, just = c("left", "bottom"), 
                    width = .98, height = .675)
 pushViewport(vp_dsn)
 print(p_anom, newpage = FALSE)
 
+# lower legend title
 upViewport()
-vp_legcap1 <- viewport(x = .93, y = .575, just = c("left", "bottom"), 
+vp_legcap1 <- viewport(x = .475, y = -.165, just = c("left", "bottom"), 
                        width = .1, height = .42)
 pushViewport(vp_legcap1)
-grid.text(expression("NDVI"[EOT]), rot = -90, gp = gpar(cex = .7))
-
-# lower colorkey
-upViewport()
-vpkeylo <- viewport(x = .885, y = .35,
-                    height = 0.3, width = .05,
-                    just = c("center", "center"),
-                    name = "keylo.vp")
-pushViewport(vpkeylo)
-draw.colorkey(key = list(col = col.div(100), width = 1,
-                         at = seq(-.4, .4, .05), labels = list(cex = .7),
-                         space = "right"), draw = TRUE)
-
-# upper colorkey
-upViewport()
-vpkeyup <- viewport(x = .885, y = .785,
-                    height = 0.15, width = .05,
-                    just = c("center", "center"),
-                    name = "keyup.vp")
-pushViewport(vpkeyup)
-draw.colorkey(key = list(col = col.regions(100), width = 1,
-                         at = seq(-.1, 1, .05), labels = list(cex = .7),
-                         space = "right"), draw = TRUE)
-
-upViewport()
-vp_legcap2 <- viewport(x = .93, y = .04, just = c("left", "bottom"), 
-                       width = .1, height = .64)
-pushViewport(vp_legcap2)
-grid.text(expression(Delta ~ "NDVI"), rot = -90, gp = gpar(cex = .7))
+grid.text(expression(Delta ~ "NDVI"), gp = gpar(cex = .85))
 
 dev.off()
 
 ## standalone version
 tiff("publications/paper/detsch_et_al__ndvi_dynamics/figures/data/vis/figure_02.tiff", 
-    width = 9, height = 10, units = "cm", res = 500, compression = "lzw")
+    width = 10, height = 16, units = "cm", res = 500, compression = "lzw")
 grid.newpage()
 
-vp_raw <- viewport(x = -.08, y = .55, just = c("left", "bottom"), 
+# raw data
+vp_raw <- viewport(x = 0, y = .51, just = c("left", "bottom"), 
                    width = 1, height = .475)
 pushViewport(vp_raw)
 print(p_raw_mv, newpage = FALSE)
 
+# anomalies
 upViewport()
-vp_dsn <- viewport(x = -.08, y = 0, just = c("left", "bottom"), 
+vp_dsn <- viewport(x = 0, y = 0, just = c("left", "bottom"), 
                    width = .98, height = .675)
 pushViewport(vp_dsn)
 print(p_anom, newpage = FALSE)
 
+# lower legend title
 upViewport()
-vp_legcap1 <- viewport(x = .93, y = .575, just = c("left", "bottom"), 
+vp_legcap1 <- viewport(x = .475, y = -.165, just = c("left", "bottom"), 
                        width = .1, height = .42)
 pushViewport(vp_legcap1)
-grid.text(expression("NDVI"[EOT]), rot = -90, gp = gpar(cex = .7))
-
-# lower colorkey
-upViewport()
-vpkeylo <- viewport(x = .885, y = .35,
-                    height = 0.3, width = .05,
-                    just = c("center", "center"),
-                    name = "keylo.vp")
-pushViewport(vpkeylo)
-draw.colorkey(key = list(col = col.div(100), width = 1,
-                         at = seq(-.4, .4, .05), labels = list(cex = .7),
-                         space = "right"), draw = TRUE)
-
-# upper colorkey
-upViewport()
-vpkeyup <- viewport(x = .885, y = .785,
-                    height = 0.15, width = .05,
-                    just = c("center", "center"),
-                    name = "keyup.vp")
-pushViewport(vpkeyup)
-draw.colorkey(key = list(col = col.regions(100), width = 1,
-                         at = seq(-.1, 1, .05), labels = list(cex = .7),
-                         space = "right"), draw = TRUE)
-
-upViewport()
-vp_legcap2 <- viewport(x = .93, y = .04, just = c("left", "bottom"), 
-                       width = .1, height = .64)
-pushViewport(vp_legcap2)
-grid.text(expression(Delta ~ "NDVI"), rot = -90, gp = gpar(cex = .7))
+grid.text(expression(Delta ~ "NDVI"), gp = gpar(cex = .85))
 
 dev.off()
 
