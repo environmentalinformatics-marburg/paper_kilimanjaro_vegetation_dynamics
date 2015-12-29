@@ -4,7 +4,7 @@ setwdOS(path_ext = "publications/paper/detsch_et_al__ndvi_dynamics/figures/data"
 
 ## packages
 lib <- c("raster", "rgdal", "plyr", "Rsenal", "OpenStreetMap", "ggplot2", 
-         "grid")
+         "grid", "lattice")
 sapply(lib, function(x) library(x, character.only = TRUE))
 
 ## functions
@@ -23,7 +23,7 @@ template_ll_points <- fortify(template_ll, region = "id")
 fls_prd <- list.files("MODIS_ARC/PROCESSED/", pattern = "^MOD14A1", 
                       full.names = TRUE, recursive = TRUE)
 rst_prd <- raster(fls_prd)
-rst_prd <- crop(rst_prd, kiliAerial(rasterize = TRUE))
+rst_prd <- crop(rst_prd, kiliAerial())
 
 rst_prd_crp <- crop(rst_prd, template[c(53, 54, 62, 63), ], snap = "out")
 template_1km_crp <- rasterToPolygons(rst_prd_crp)
@@ -37,9 +37,9 @@ template_1km_crp_ll_points <- fortify(template_1km_crp_ll, region = "id")
 ext_gimms <- projectExtent(template, "+init=epsg:4326")
 
 kili.map <- openproj(openmap(upperLeft = c(ymax(ext_gimms), xmin(ext_gimms)), 
-                             lowerRight = c(ymin(ext_gimms), xmax(ext_gimms)), 
-                             type = "bing", minNumTiles = 12L), 
-                             projection = "+init=epsg:4326")
+                       lowerRight = c(ymin(ext_gimms), xmax(ext_gimms)), 
+                       type = "bing", minNumTiles = 12L), 
+                       projection = "+init=epsg:4326")
 
 # quadrant margins
 ext_tmp <- extent(template_ll)
@@ -70,6 +70,8 @@ p_bing <- autoplot(kili.map) +
                lwd = 1.1, fill = "transparent") + 
   geom_polygon(aes(long, lat), data = np_old_df, colour = "grey75", 
                lwd = 1, linetype = "dotted", fill = "transparent") + 
+  geom_text(aes(x = 37.6, y = -3.4), label = "\uA9 OpenStreetMap contributors", 
+            size = 3, fontface = "bold", colour = "white") + 
   geom_hline(aes(yintercept = num_cntr_y), colour = "black", lty = "dashed", 
              lwd = .7) +
   geom_vline(aes(xintercept = num_cntr_x), colour = "black", lty = "dashed", 
