@@ -1,8 +1,7 @@
 ### environmental stuff
 
 ## working directory
-library(Orcs)
-setwdOS()
+Orcs::setwdOS()
 
 ## packages
 lib <- c("reshape2", "raster", "remote", "lubridate", "doParallel", 
@@ -17,7 +16,7 @@ source(paste0(ch_dir_repo, "importDmi.R"))
 source(paste0(ch_dir_repo, "extentEnsoSeason.R"))
 
 ## parallelization
-cl <- makeCluster(4)
+cl <- makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
 ## input filepath
@@ -158,7 +157,7 @@ blues <- brewer.pal(7, "YlGnBu")
 cols_div <- colorRampPalette(rev(brewer.pal(5, "PuOr")))
 
 # dem contours
-dem <- raster("kilimanjaro/coordinates/coords/DEM_ARC1960_30m_Hemp.tif")
+dem <- raster("kilimanjaro/coordinates/DEM_ARC1960_30m_Hemp.tif")
 dem <- trim(projectRaster(dem, crs = "+init=epsg:4326"))
 dem_flipped <- flip(dem, "y")
 x <- coordinates(dem_flipped)[, 1]
@@ -176,15 +175,16 @@ p_dem <- levelplot(z ~ x * y, colorkey = FALSE, at = seq(1000, 6000, 1000),
 p_ndvi_oni_lag <- spplot(trim(projectRaster(ls_ccf[[1]][[2]], crs = "+init=epsg:4326")), 
                          col.regions = cols_div(100), at = -6.5:6.5, 
                          scales = list(draw = TRUE, cex = .7), main = list("Lag (months)", cex = 1), 
-                         sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                          txt = "a)", font = 2, cex = 1.2))
+                         sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                          txt = "a)", font = 2, cex = .75))
 p_ndvi_oni_lag_dem <- p_ndvi_oni_lag + as.layer(p_dem)
-p_ndvi_oni_lag_dem_env <- envinmrRasterPlot(p_ndvi_oni_lag_dem, rot = 0)
+p_ndvi_oni_lag_dem_env <- envinmrRasterPlot(p_ndvi_oni_lag_dem, rot = 0, 
+                                            key.cex = .8, width = .6, height = .5)
 p_ndvi_oni_r <- spplot(trim(projectRaster(ls_ccf[[1]][[1]], crs = "+init=epsg:4326")), 
                        col.regions = reds(100), at = seq(.025, .525, .05), 
                        scales = list(draw = TRUE, cex = .7), 
-                       sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                        txt = "b)", font = 2, cex = 1.2))
+                       sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                        txt = "b)", font = 2, cex = .75))
 p_ndvi_oni_r_dem <- p_ndvi_oni_r + as.layer(p_dem)
 p_ndvi_oni_r_dem_env <- envinmrRasterPlot(p_ndvi_oni_r_dem, rot = 0)
 
@@ -192,15 +192,15 @@ p_ndvi_oni_r_dem_env <- envinmrRasterPlot(p_ndvi_oni_r_dem, rot = 0)
 p_ndvi_dmi_lag <- spplot(trim(projectRaster(ls_ccf[[2]][[2]], crs = "+init=epsg:4326")), 
                          col.regions = cols_div(100), at = -6.5:6.5, 
                          scales = list(draw = TRUE, cex = .7), 
-                         sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                          txt = "c)", font = 2, cex = 1.2))
+                         sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                          txt = "c)", font = 2, cex = .75))
 p_ndvi_dmi_lag_dem <- p_ndvi_dmi_lag + as.layer(p_dem)
 p_ndvi_dmi_lag_dem_env <- envinmrRasterPlot(p_ndvi_dmi_lag_dem, rot = 0)
 p_ndvi_dmi_r <- spplot(trim(projectRaster(ls_ccf[[2]][[1]], crs = "+init=epsg:4326")), 
                        col.regions = reds(100), at = seq(.025, .525, .05), 
                        scales = list(draw = TRUE, cex = .7), 
-                       sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                        txt = "d)", font = 2, cex = 1.2))
+                       sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                        txt = "d)", font = 2, cex = .75))
 p_ndvi_dmi_r_dem <- p_ndvi_dmi_r + as.layer(p_dem)
 p_ndvi_dmi_r_dem_env <- envinmrRasterPlot(p_ndvi_dmi_r_dem, rot = 0)
 
@@ -223,11 +223,11 @@ vp1 <- viewport(x = .5, y = .065,
                 just = c("center", "bottom"),
                 name = "key.vp")
 pushViewport(vp1)
-draw.colorkey(key = list(col = reds(100), width = 1, height = .5,
+draw.colorkey(key = list(col = reds(100), width = .6, height = .5,
                          #                          at = -1:1, labels = c("-", "0", "+"), 
                          at = seq(.025, .525, .05), 
                          space = "bottom"), draw = TRUE)
-grid.text("r", x = 0.5, y = -.05, just = c("centre", "top"), 
+grid.text("r", x = 0.5, y = .05, just = c("centre", "top"), 
           gp = gpar(font = 2, cex = .85))
 
 dev.off()
@@ -248,11 +248,11 @@ vp1 <- viewport(x = .5, y = .065,
                 just = c("center", "bottom"),
                 name = "key.vp")
 pushViewport(vp1)
-draw.colorkey(key = list(col = reds(100), width = 1, height = .5,
+draw.colorkey(key = list(col = reds(100), width = .6, height = .5,
                          #                          at = -1:1, labels = c("-", "0", "+"), 
                          at = seq(.025, .525, .05), 
                          space = "bottom"), draw = TRUE)
-grid.text("r", x = 0.5, y = -.05, just = c("centre", "top"), 
+grid.text("r", x = 0.5, y = .05, just = c("centre", "top"), 
           gp = gpar(font = 2, cex = .85))
 
 dev.off()

@@ -1,8 +1,7 @@
 ### environmental stuff
 
 ## working directory
-library(Orcs)
-setwdOS()
+Orcs::setwdOS()
 
 ## packages
 lib <- c("raster", "rgdal", "Kendall", "doParallel", "ggplot2", "rgeos", 
@@ -13,7 +12,7 @@ jnk <- sapply(lib, function(x) library(x, character.only = TRUE, quietly = TRUE)
 source("repositories/magic/dfg_for_kilimanjaro/fire_ndvi/src/uniqueFires.R")
 
 ## parallelization
-registerDoParallel(cl <- makeCluster(4))
+registerDoParallel(cl <- makeCluster(detectCores()-1))
 
 ## input filepath
 ch_dir_fig <- "publications/paper/detsch_et_al__ndvi_dynamics/figures/"
@@ -178,8 +177,8 @@ for (i in 1:2) {
       geom_boxplot(notch = TRUE, fill = "grey75", lwd = .75) + 
       labs(x = "", y = lbl[[i]]) + 
       theme_bw() + 
-      theme(panel.grid = element_blank(), axis.title = element_text(size = 8.5), 
-            axis.text = element_text(size = 7))
+      theme(panel.grid = element_blank(), axis.title = element_text(size = 10), 
+            axis.text = element_text(size = 8))
 
   if (i == 2)
     ls_p[[i]] <- ls_p[[i]] + 
@@ -191,8 +190,8 @@ png(paste0(ch_dir_data, "vis/fig07__vegetation_response.png"), width = 10,
     height = 10, units = "cm", res = 500)
 grid.newpage()
 print(do.call(function(...) grid.arrange(..., ncol = 2), ls_p), newpage = FALSE)
-grid.text("a)", x = .185, y = .9, gp = gpar(font = 2, cex = .9))
-grid.text("b)", x = .71, y = .9, gp = gpar(font = 2, cex = .9))
+grid.text("a)", x = .175, y = .925, gp = gpar(font = 2, cex = .9))
+grid.text("b)", x = .7, y = .925, gp = gpar(font = 2, cex = .9))
 dev.off()
 
 ## standalone version
@@ -202,6 +201,6 @@ postscript(paste0(ch_dir_data, "vis/figure_07.eps"), width = 10*.3937,
 grid.newpage()
 grid.newpage()
 print(do.call(function(...) grid.arrange(..., ncol = 2), ls_p), newpage = FALSE)
-grid.text("a)", x = .185, y = .9, gp = gpar(font = 2, cex = .9))
-grid.text("b)", x = .71, y = .9, gp = gpar(font = 2, cex = .9))
+grid.text("a)", x = .175, y = .925, gp = gpar(font = 2, cex = .9))
+grid.text("b)", x = .7, y = .925, gp = gpar(font = 2, cex = .9))
 dev.off()

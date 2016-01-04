@@ -97,11 +97,11 @@ old_theme$layout.heights$top.padding$units <- "points"
 old_theme$layout.heights$bottom.padding$x <- 0
 old_theme$layout.heights$bottom.padding$units <- "points"
 
-png(paste0(ch_dir_data, "vis/fig04__breakpoints.png"), width = 14, height = 12, 
+png(paste0(ch_dir_data, "vis/fig04__breakpoints.png"), width = 14.5, height = 12, 
     units = "cm", res = 500)
 xyplot(value ~ time | component, data = mlt_bfast_prd_ul, layout = c(1, 4),
          xlab = "Time (months)", ylab = NULL, 
-         as.table = TRUE, scales = list(y = list(relation = "free")), 
+         as.table = TRUE, scales = list(y = list(relation = "free", rot = 0)), 
          panel = function(x, y) {
            panel.xyplot(x, y, col = "black", type = "l", lwd = 2)
          }, par.settings = list(strip.background = list(col = "lightgrey"), 
@@ -127,8 +127,9 @@ jnk <- foreach (i = 1:4, label = c("a)", "b)", "c)", "d)")) %do%  {
   trellis.focus(name = "panel", column = 1, row = i)
   y_min <- current.panel.limits()$ylim[1]
   y_max <- current.panel.limits()$ylim[2]
-  y_pos <- y_max - 0.1 * (y_max - y_min)
-  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = .8)
+  y_pos <- y_max - 0.15 * (y_max - y_min)
+  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = .75, 
+             fontface = "bold")
   trellis.unfocus()
 }
 
@@ -143,12 +144,12 @@ dev.off()
 
 ## standalone version
 setEPS()
-postscript(paste0(ch_dir_data, "vis/figure_04.eps"), width = 14*.3937, 
+postscript(paste0(ch_dir_data, "vis/figure_04.eps"), width = 14.5*.3937, 
            height = 12*.3937)
 
 xyplot(value ~ time | component, data = mlt_bfast_prd_ul, layout = c(1, 4),
        xlab = "Time (months)", ylab = NULL, 
-       as.table = TRUE, scales = list(y = list(relation = "free")), 
+       as.table = TRUE, scales = list(y = list(relation = "free", rot = 0)), 
        panel = function(x, y) {
          panel.xyplot(x, y, col = "black", type = "l", lwd = 2)
        }, par.settings = list(strip.background = list(col = "lightgrey"), 
@@ -174,8 +175,9 @@ jnk <- foreach (i = 1:4, label = c("a)", "b)", "c)", "d)")) %do%  {
   trellis.focus(name = "panel", column = 1, row = i)
   y_min <- current.panel.limits()$ylim[1]
   y_max <- current.panel.limits()$ylim[2]
-  y_pos <- y_max - 0.1 * (y_max - y_min)
-  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = .8)
+  y_pos <- y_max - 0.15 * (y_max - y_min)
+  panel.text(x = as.Date("1981-01-01"), y = y_pos, labels = label, cex = .75, 
+             fontface = "bold")
   trellis.unfocus()
 }
 

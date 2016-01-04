@@ -1,8 +1,7 @@
 ### environmental stuff
 
 ## working directory
-library(Orcs)
-setwdOS()
+Orcs::setwdOS()
 
 ## packages
 library(Rsenal)
@@ -21,7 +20,7 @@ ch_dir_harm <- paste0(ch_dir_data, "harmonic/")
 ### data processing
 
 # dem
-dem <- raster("kilimanjaro/coordinates/coords/DEM_ARC1960_30m_Hemp.tif")
+dem <- raster("kilimanjaro/coordinates/DEM_ARC1960_30m_Hemp.tif")
 dem <- trim(projectRaster(dem, crs = "+init=epsg:4326"))
 dem_flipped <- flip(dem, "y")
 x <- coordinates(dem_flipped)[, 1]
@@ -68,11 +67,12 @@ p_month_max_st <- spplot(rst_st[[1]], scales = list(draw = TRUE, cex = .7), at =
                          # ylab = list("Latitude", cex = 1.2), 
                          col.regions = hcl(h = col_month_max$h, c = 70, l = 65), 
                          main = list("Month", cex = 1),
-                         sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                          txt = "a)", font = 2, cex = 1.2))
+                         sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                          txt = "a)", font = 2, cex = .75))
 
 p_month_max_st_dem <- p_month_max_st + as.layer(p_dem)
-p_month_max_st_dem_envin <- envinmrRasterPlot(p_month_max_st_dem, rot = 0)
+p_month_max_st_dem_envin <- envinmrRasterPlot(p_month_max_st_dem, rot = 0, 
+                                              key.cex = .8)
 
 # nd month max
 rat_month_max <- ratify(rst_nd[[1]])
@@ -90,8 +90,8 @@ p_month_max_nd <- spplot(rst_nd[[1]], scales = list(draw = TRUE, cex = .7), at =
                          # xlab = list("Longitude", cex = 1.2), 
                          # ylab = list("Latitude", cex = 1.2), 
                          col.regions = hcl(h = col_month_max$h, c = 70, l = 65), 
-                         sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                          txt = "b)", font = 2, cex = 1.2))
+                         sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                          txt = "b)", font = 2, cex = .75))
 
 p_month_max_nd_dem <- p_month_max_nd + as.layer(p_dem)
 p_month_max_nd_dem_envin <- envinmrRasterPlot(p_month_max_nd_dem, rot = 0)
@@ -114,8 +114,8 @@ p_diff_max_x <- levelplot(rat_diff_month_rcl, col.regions = rev(brewer.pal(9, "R
 p_diff_max_x <- spplot(rst_diff_month_rcl, col.regions = rev(brewer.pal(9, "RdBu")), 
                        at = -1.5:1.5, scales = list(draw = TRUE, cex = .7), 
                        # xlab = "Longitude", ylab = "Latitude", 
-                       sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                        txt = "c)", font = 2, cex = 1.2))
+                       sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                        txt = "c)", font = 2, cex = .75))
 
 p_diff_max_x_dem <- p_diff_max_x + as.layer(p_dem)
 p_diff_max_x_dem_envin <- envinmrRasterPlot(p_diff_max_x_dem, rot = 0)
@@ -125,8 +125,8 @@ cols_div <- colorRampPalette(brewer.pal(11, "BrBG"))
 p_diff_max_y <- spplot(rst_diff[[2]], col.regions = cols_div(17), 
                        at = seq(-.175, .175, .025), scales = list(draw = TRUE), 
                        # xlab = "Longitude", ylab = "Latitude", 
-                       sp.layout = list("sp.text", loc = c(37.025, -3.35), 
-                                        txt = "d)", font = 2, cex = 1.2))
+                       sp.layout = list("sp.text", loc = c(37.04, -3.36), 
+                                        txt = "d)", font = 2, cex = .75))
 
 p_diff_max_y_dem <- p_diff_max_y + as.layer(p_dem)
 p_diff_max_y_dem_envin <- envinmrRasterPlot(p_diff_max_y_dem, rot = 0)

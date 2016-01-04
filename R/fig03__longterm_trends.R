@@ -5,7 +5,7 @@ library(Orcs)
 setwdOS()
 
 ## packages
-library(raster)
+library(Rsenal)
 library(rasterVis)
 library(rgdal)
 library(grid)
@@ -44,6 +44,8 @@ rst_slp_gt_rmse <- overlay(rst_slp, rst_rmse, fun = function(x, y) {
   })
 }, filename = paste0(ch_dir_eval, "slp_gt_rmse"), format = "GTiff", 
 overwrite = TRUE)
+
+rst_slp_gt_rmse <- raster(paste0(ch_dir_eval, "slp_gt_rmse.tif"))
 rst_slp_gt_rmse <- trim(projectRaster(rst_slp_gt_rmse, crs = "+init=epsg:4326"))
 
 ## visualization
@@ -80,8 +82,8 @@ p_slp_gt_rmse <-
          scales = list(draw = TRUE, cex = .7), colorkey = FALSE,
          sp.layout = list(list("sp.lines", np_old_utm_sl, lwd = 1.6, lty = 2), 
                           list("sp.lines", np_new_utm_sl, lwd = 1.6), 
-                          list("sp.text", loc = c(37.05, -3.35), txt = "a)", 
-                               col = "black", font = 2, cex = .7)
+                          list("sp.text", loc = c(37.04, -3.36), txt = "a)", 
+                               col = "black", font = 2, cex = .75)
          )) + 
   as.layer(p_dem)
 
@@ -107,8 +109,8 @@ p_mk <-
          at = seq(-.5, .5, .1), scales = list(draw = TRUE, cex = .7),  
          sp.layout = list(list("sp.lines", np_old_utm_sl, lwd = 1.6, lty = 2), 
                           list("sp.lines", np_new_utm_sl, lwd = 1.6), 
-                          list("sp.text", loc = c(37.05, -3.35), txt = "b)", 
-                               col = "black", font = 2, cex = .7)
+                          list("sp.text", loc = c(37.04, -3.36), txt = "b)", 
+                               col = "black", font = 2, cex = .75)
          )) + 
   as.layer(p_dem)
 
@@ -121,8 +123,8 @@ p_comb <- latticeCombineGrid(list(p_slp_gt_rmse_envin, p_mk_envin),
 p_comb <- latticeCombineGrid(list(p_slp_gt_rmse, p_mk), layout = c(2, 1))
 
 ## manuscript version
-png(paste0(ch_dir_data, "vis/fig03__longterm_trends.png"), height = 9.5, 
-    width = 15, units = "cm", res = 500)
+png(paste0(ch_dir_data, "vis/fig03__longterm_trends.png"), height = 11, 
+    width = 20, units = "cm", res = 500)
 plot.new()
 
 print(p_comb, newpage = FALSE)
@@ -130,31 +132,31 @@ print(p_comb, newpage = FALSE)
 # additional key
 downViewport(trellis.vpname(name = "figure"))
 
-vp1 <- viewport(x = 0.25, y = 1.25,
+vp1 <- viewport(x = 0.25, y = 1.16,
                 height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_slope.vp")
 pushViewport(vp1)
 draw.colorkey(key = list(col = colorRampPalette(brewer.pal(11, "BrBG")), 
-                         width = 1, height = .5, at = seq(-.25, .25, .05), 
+                         width = .6, height = .5, at = seq(-.25, .25, .05), 
                          space = "bottom", labels = list(cex = .7)), draw = TRUE)
-grid.text("Regression slope", y = 2.375, gp = gpar(cex = .75))
+grid.text("Regression slope", y = 2, gp = gpar(cex = .8))
 
 upViewport()
-vp2 <- viewport(x = 0.75, y = 1.25,
+vp2 <- viewport(x = 0.75, y = 1.16,
                 height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_tau.vp")
 pushViewport(vp2)
 draw.colorkey(key = list(col = brewer.pal(10, "BrBG"), 
-                         width = 1, height = .5, at = seq(-.5, .5, .1), 
+                         width = .6, height = .5, at = seq(-.5, .5, .1), 
                          space = "bottom", labels = list(cex = .7)), draw = TRUE)
-grid.text(expression("Kendall's" ~ tau), y = 2.375, gp = gpar(cex = .75))
+grid.text(expression("Kendall's" ~ tau), y = 2, gp = gpar(cex = .8))
 
 dev.off()
 
 ## standalone version
-tiff(paste0(ch_dir_data, "vis/figure_03.tiff"), height = 9.5, width = 15, 
+tiff(paste0(ch_dir_data, "vis/figure_03.tiff"), height = 11, width = 20, 
      units = "cm", res = 500, compression = "lzw")
 plot.new()
 
@@ -163,25 +165,25 @@ print(p_comb, newpage = FALSE)
 # additional key
 downViewport(trellis.vpname(name = "figure"))
 
-vp1 <- viewport(x = 0.25, y = 1.25,
+vp1 <- viewport(x = 0.25, y = 1.16,
                 height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_slope.vp")
 pushViewport(vp1)
 draw.colorkey(key = list(col = colorRampPalette(brewer.pal(11, "BrBG")), 
-                         width = 1, height = .5, at = seq(-.25, .25, .05), 
+                         width = .6, height = .5, at = seq(-.25, .25, .05), 
                          space = "bottom", labels = list(cex = .7)), draw = TRUE)
-grid.text("Regression slope", y = 2.375, gp = gpar(cex = .75))
+grid.text("Regression slope", y = 2, gp = gpar(cex = .8))
 
 upViewport()
-vp2 <- viewport(x = 0.75, y = 1.25,
+vp2 <- viewport(x = 0.75, y = 1.16,
                 height = 0.07, width = .6,
                 just = c("centre", "bottom"),
                 name = "key_tau.vp")
 pushViewport(vp2)
 draw.colorkey(key = list(col = brewer.pal(10, "BrBG"), 
-                         width = 1, height = .5, at = seq(-.5, .5, .1), 
+                         width = .6, height = .5, at = seq(-.5, .5, .1), 
                          space = "bottom", labels = list(cex = .7)), draw = TRUE)
-grid.text(expression("Kendall's" ~ tau), y = 2.375, gp = gpar(cex = .75))
+grid.text(expression("Kendall's" ~ tau), y = 2, gp = gpar(cex = .8))
 
 dev.off()
