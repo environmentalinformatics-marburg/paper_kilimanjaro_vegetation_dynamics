@@ -1,10 +1,12 @@
-library(Orcs)
-library(raster)
-library(RColorBrewer)
+## set working directory
+Orcs::setwdOS()
+
+## load packages
 library(Rsenal)
+library(RColorBrewer)
+library(lattice)
 library(grid)
 
-setwdOS()
 
 ## data import
 
@@ -32,7 +34,7 @@ rst_eot_ll <- trim(rst_eot_ll)
 # rst_dsn_ll <- trim(rst_dsn_ll)
 
 ## dem
-rst_dem <- raster("kilimanjaro/coordinates/coords/DEM_ARC1960_30m_Hemp.tif")
+rst_dem <- raster("kilimanjaro/coordinates/DEM_ARC1960_30m_Hemp.tif")
 rst_dem_ll <- projectRaster(rst_dem, crs = "+init=epsg:4326")
 
 ## monthly averages
@@ -57,14 +59,13 @@ p_raw <- spplot(rst_eot_ll[[int_id_feb]],
                               x = list(at = seq(37.1, 37.6, .5)), 
                               y = list(at = seq(-3, -3.4, -.2))), 
                 col.regions = col.regions(100), at = seq(-.1, 1, .05), 
-                colorkey = list(space = "top", width = .7, height = .75), 
+                colorkey = list(space = "left", width = .6, height = .5), 
                 xlab = NULL, ylab = NULL, 
-                main = list(expression("      NDVI"["EOT"]), cex = .85),
                 sp.layout = list(
                   list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75", 
                        lwd = .5), 
-                  list("sp.text", loc = c(37.05, -2.875), txt = "a)", 
-                       col = "black", font = 2, cex = .8)
+                  list("sp.text", loc = c(37.04, -3.36), txt = "a)", 
+                       col = "black", font = 2, cex = .75)
                 ))
 
 p_mv <- spplot(rst_mv_ll[[1]], colorkey = FALSE,
@@ -76,15 +77,16 @@ p_mv <- spplot(rst_mv_ll[[1]], colorkey = FALSE,
                sp.layout = list(
                  list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75", 
                       lwd = .5), 
-                 list("sp.text", loc = c(37.05, -2.875), txt = "b)", 
-                      col = "black", font = 2, cex = .8)
+                 list("sp.text", loc = c(37.04, -3.36), txt = "b)", 
+                      col = "black", font = 2, cex = .75)
                ))
 
-p_raw_mv <- latticeCombineGrid(list(p_raw, p_mv), layout = c(2, 1))
+p_raw_mv <- latticeCombineGrid(list(p_raw, p_mv), layout = c(1, 2))
+p_raw_mv <- update(p_raw_mv, scales = list(alternating = FALSE))
 
 col.div <- colorRampPalette(brewer.pal(11, "BrBG"))
 p_anom <- spplot(rst_eot_ll[[int_id_feb]] - rst_mv_ll[[1]], 
-                 colorkey = list(space = "bottom", width = .7, height = .75),  
+                 colorkey = list(space = "right", width = .6, height = .75),  
                  scales = list(draw = TRUE, cex = .7, tck = c(1, 0),
                                x = list(at = seq(37, 37.6, .2)), 
                                y = list(at = seq(-3, -3.4, -.2))), 
@@ -93,8 +95,8 @@ p_anom <- spplot(rst_eot_ll[[int_id_feb]] - rst_mv_ll[[1]],
                  sp.layout = list(
                    list("sp.lines", rasterToContour(rst_dem_ll), col = "grey75", 
                         lwd = .5), 
-                   list("sp.text", loc = c(37.025, -2.875), txt = "c)", 
-                        col = "black", font = 2, cex = .8)
+                   list("sp.text", loc = c(37.04, -3.36), txt = "c)", 
+                        col = "black", font = 2, cex = .75)
                  ))
 
 ## manuscript version
@@ -111,55 +113,59 @@ lattice.options(
 )
 
 png("publications/paper/detsch_et_al__ndvi_dynamics/figures/data/vis/fig02__deseason.png", 
-    width = 10, height = 16, units = "cm", pointsize = 12, res = 500)
+    width = 20, height = 12, units = "cm", res = 500)
 grid.newpage()
 
 # raw data
-vp_raw <- viewport(x = 0, y = .51, just = c("left", "bottom"), 
-                   width = 1, height = .475)
+vp_raw <- viewport(x = -.02, y = .1425, just = c("left", "bottom"), 
+                   width = .5, height = .7275)
 pushViewport(vp_raw)
 print(p_raw_mv, newpage = FALSE)
 
+## left legend title
+downViewport(trellis.vpname("figure"))
+grid.text(expression("NDVI"["EOT"]), just = c("left", "bottom"), 
+          x = -.7, y = .42, rot = 90, gp = gpar(fontface = "bold", cex = .85))
+
 # anomalies
-upViewport()
-vp_dsn <- viewport(x = 0, y = 0, just = c("left", "bottom"), 
-                   width = .98, height = .675)
+upViewport(n = 0)
+vp_dsn <- viewport(x = .38, y = 0, just = c("left", "bottom"), 
+                   width = .575, height = 1)
 pushViewport(vp_dsn)
 print(p_anom, newpage = FALSE)
 
-# lower legend title
-upViewport()
-vp_legcap1 <- viewport(x = .475, y = -.165, just = c("left", "bottom"), 
-                       width = .1, height = .42)
-pushViewport(vp_legcap1)
-grid.text(expression(Delta ~ "NDVI"), gp = gpar(cex = .85))
+## right legend title
+grid.text(expression(Delta ~ "NDVI"), just = c("left", "bottom"),
+          x = 1.02, y = .57, rot = -90, gp = gpar(cex = .85, fontface = "bold"))
 
 dev.off()
 
 ## standalone version
 tiff("publications/paper/detsch_et_al__ndvi_dynamics/figures/data/vis/figure_02.tiff", 
-    width = 10, height = 16, units = "cm", res = 500, compression = "lzw")
+     width = 20, height = 12, units = "cm", res = 500, compression = "lzw")
 grid.newpage()
 
 # raw data
-vp_raw <- viewport(x = 0, y = .51, just = c("left", "bottom"), 
-                   width = 1, height = .475)
+vp_raw <- viewport(x = -.02, y = .1425, just = c("left", "bottom"), 
+                   width = .5, height = .7275)
 pushViewport(vp_raw)
 print(p_raw_mv, newpage = FALSE)
 
+## left legend title
+downViewport(trellis.vpname("figure"))
+grid.text(expression("NDVI"["EOT"]), just = c("left", "bottom"), 
+          x = -.7, y = .42, rot = 90, gp = gpar(fontface = "bold", cex = .85))
+
 # anomalies
-upViewport()
-vp_dsn <- viewport(x = 0, y = 0, just = c("left", "bottom"), 
-                   width = .98, height = .675)
+upViewport(n = 0)
+vp_dsn <- viewport(x = .38, y = 0, just = c("left", "bottom"), 
+                   width = .575, height = 1)
 pushViewport(vp_dsn)
 print(p_anom, newpage = FALSE)
 
-# lower legend title
-upViewport()
-vp_legcap1 <- viewport(x = .475, y = -.165, just = c("left", "bottom"), 
-                       width = .1, height = .42)
-pushViewport(vp_legcap1)
-grid.text(expression(Delta ~ "NDVI"), gp = gpar(cex = .85))
+## right legend title
+grid.text(expression(Delta ~ "NDVI"), just = c("left", "bottom"),
+          x = 1.02, y = .57, rot = -90, gp = gpar(cex = .85, fontface = "bold"))
 
 dev.off()
 
