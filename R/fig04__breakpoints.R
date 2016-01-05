@@ -97,9 +97,11 @@ old_theme$layout.heights$top.padding$units <- "points"
 old_theme$layout.heights$bottom.padding$x <- 0
 old_theme$layout.heights$bottom.padding$units <- "points"
 
-png(paste0(ch_dir_data, "vis/fig04__breakpoints.png"), width = 14.5, height = 12, 
+png(paste0(ch_dir_data, "vis/fig04__breakpoints.png"), width = 14.5, height = 10, 
     units = "cm", res = 500)
-xyplot(value ~ time | component, data = mlt_bfast_prd_ul, layout = c(1, 4),
+xyplot(value ~ time | component, 
+       data = subset(mlt_bfast_prd_ul, component != "Remainder component"), 
+       layout = c(1, 3),
          xlab = "Time (months)", ylab = NULL, 
          as.table = TRUE, scales = list(y = list(relation = "free", rot = 0)), 
          panel = function(x, y) {
@@ -117,13 +119,13 @@ panel.text(x = bp_months, y = c(.5, .5, .625), labels = paste0("\n", as.yearmon(
            srt = 90, col = "red", cex = .5)
 trellis.unfocus()
 
-for (i in c(2, 4)) {
+for (i in c(2)) {
   trellis.focus(name = "panel", column = 1, row = i)
   panel.abline(h = 0, lty = 2, col = "grey50")
   trellis.unfocus()
 }
 
-jnk <- foreach (i = 1:4, label = c("a)", "b)", "c)", "d)")) %do%  {
+jnk <- foreach (i = 1:3, label = c("a)", "b)", "c)")) %do%  {
   trellis.focus(name = "panel", column = 1, row = i)
   y_min <- current.panel.limits()$ylim[1]
   y_max <- current.panel.limits()$ylim[2]
@@ -145,9 +147,11 @@ dev.off()
 ## standalone version
 setEPS()
 postscript(paste0(ch_dir_data, "vis/figure_04.eps"), width = 14.5*.3937, 
-           height = 12*.3937)
+           height = 10*.3937)
 
-xyplot(value ~ time | component, data = mlt_bfast_prd_ul, layout = c(1, 4),
+xyplot(value ~ time | component, 
+       data = subset(mlt_bfast_prd_ul, component != "Remainder component"), 
+       layout = c(1, 3),
        xlab = "Time (months)", ylab = NULL, 
        as.table = TRUE, scales = list(y = list(relation = "free", rot = 0)), 
        panel = function(x, y) {
@@ -165,13 +169,13 @@ panel.text(x = bp_months, y = c(.5, .5, .625), labels = paste0("\n", as.yearmon(
            srt = 90, col = "red", cex = .5)
 trellis.unfocus()
 
-for (i in c(2, 4)) {
+for (i in c(2)) {
   trellis.focus(name = "panel", column = 1, row = i)
   panel.abline(h = 0, lty = 2, col = "grey50")
   trellis.unfocus()
 }
 
-jnk <- foreach (i = 1:4, label = c("a)", "b)", "c)", "d)")) %do%  {
+jnk <- foreach (i = 1:3, label = c("a)", "b)", "c)")) %do%  {
   trellis.focus(name = "panel", column = 1, row = i)
   y_min <- current.panel.limits()$ylim[1]
   y_max <- current.panel.limits()$ylim[2]
